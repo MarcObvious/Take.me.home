@@ -11,5 +11,7 @@
     <string name="action_settings">Settings</string>
     
     <string name="Question">Where do you want to go?</string>
+    <string name="Question_hint">Type a Location or Postal Code</string>
+    
 
 </resources>
