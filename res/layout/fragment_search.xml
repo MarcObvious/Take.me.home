@@ -25,11 +25,14 @@
 
     <EditText
         android:id="@+id/answer"
+        android:textSize="17sp"
+        android:paddingTop="50dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/Question"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/Question"
+   
         android:ems="10"
         android:hint="@string/Question_hint" />
 
