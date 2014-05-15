@@ -17,17 +17,19 @@
         android:id="@+id/Question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        
+        android:textSize="20sp"
         android:layout_alignBottom="@+id/section_label"
         android:layout_centerHorizontal="true"
         android:text="@string/Question" />
 
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/answer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/section_label"
+        android:layout_below="@+id/Question"
         android:ems="10"
         android:hint="@string/Question_hint" />
 
