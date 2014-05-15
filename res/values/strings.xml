@@ -12,6 +12,7 @@
     
     <string name="Question">Where do you want to go?</string>
     <string name="Question_hint">Type a Location or Postal Code</string>
+    <string name="Button_search">Search!</string>
     
 
 </resources>
