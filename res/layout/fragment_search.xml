@@ -25,7 +25,7 @@
 		android:layout_marginTop="7dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/Question"
+        android:layout_below="@id/Question"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
    
@@ -36,8 +36,36 @@
         android:id="@+id/Button_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/answer"
+        android:layout_below="@id/answer"
         android:layout_centerHorizontal="true"
         android:text="@string/Button_search" />
+
+    <TextView
+        android:id="@+id/Question2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/Button_home"
+        android:layout_alignBottom="@+id/Button_home"
+        android:layout_alignLeft="@+id/answer"
+        android:text="@string/Question2"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/Button_go_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Button_search"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp"
+        android:text="@string/Button_go_home" />
+
+    <Button
+        android:id="@+id/Button_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/Button_go_home"
+        android:layout_marginBottom="90dp"
+        android:text="@string/Button_home" />
 
 </RelativeLayout>
