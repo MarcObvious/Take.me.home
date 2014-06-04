@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class SettingsFragment extends Fragment implements OnClickListener {
@@ -35,6 +36,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 	public void onClick(View view) {
 		switch (view.getId()) {
 		case R.id.Button_set_home:
+			getLocationClicked();
 			Toast.makeText(getActivity().getApplicationContext(), "THIS IS HOME",
 					Toast.LENGTH_LONG).show();
 			break;
@@ -95,11 +97,25 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 					Toast.LENGTH_LONG).show();
 		}
 	}
+	
+	private void drawLocation(Location location) {
+	
+		TextView lat = (TextView) mSettingsView.findViewById(R.id.latitude);
+	
+		lat.append( Double.toString(location.getLatitude()) );
+		
+
+		TextView lon = (TextView) mSettingsView.findViewById(R.id.longitude);
+	
+		lon.append( Double.toString(location.getLongitude()) );
+		
+
+		
+	}
 
 	private void makeUseOfNewLocation(Location location) {
 		loc = location;
-		loc.getLatitude();
-		loc.getLongitude();
+		drawLocation(loc);
 		
 	}
 }
