@@ -1,5 +1,7 @@
 package take.me.home;
 
-public class MapsFragment {
+import com.google.android.gms.maps.MapFragment;
+
+public class MapsFragment extends MapFragment {
 
 }
