@@ -46,6 +46,7 @@ public class MainActivity extends Activity
     	Fragment fragment = null;
     	switch (position) {
     		case 0: fragment = new SearchFragment(); break;
+    		case 1: fragment = new GuideFragment(); break;
     		//case 2: fragment = new MapsFragment(); break; 
     		case 3: fragment = new SettingsFragment(); break;
     		default: fragment = PlaceholderFragment.newInstance(position + 1);
