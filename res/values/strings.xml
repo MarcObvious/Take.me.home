@@ -10,24 +10,20 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
-    
+
     <!-- Search fragment -->
     <string name="Question">Where do you want to go?</string>
     <string name="Question_hint">Type a Location or Postal Code</string>
-    
     <string name="Button_search">Search!</string>
     <string name="Button_go_home">Just take me home!!</string>
-    
+    <string name="DestLat">Destination Latitude</string>
+    <string name="DestLong">Destination Longitude</string>
+
+    <!-- Settings fragment -->
     <string name="Question2">I\'m at home!</string>
     <string name="Button_home">Set home</string>
-    
-     <string name="Lat">Home Latitude</string>
+    <string name="Lat">Home Latitude</string>
     <string name="Long">Home Longitude</string>
-    
-    
-    
-     <string name="DestLat">Destination Latitude</string>
-    <string name="DestLong">Destination Longitude</string>
-    
+    <string name="fake_home">Fake home</string>
 
 </resources>
