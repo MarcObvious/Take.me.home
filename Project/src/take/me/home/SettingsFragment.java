@@ -123,8 +123,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		
 		TextView lat = (TextView) mSettingsView.findViewById(R.id.latitude);
 	
-		lat.setText( Double.toString(_lat) );
-		
+		lat.setText( Double.toString(_lat) );	
 
 		TextView lon = (TextView) mSettingsView.findViewById(R.id.longitude);
 	
