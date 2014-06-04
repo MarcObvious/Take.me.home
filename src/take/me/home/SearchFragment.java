@@ -1,16 +1,12 @@
 package take.me.home;
 
 import android.app.Fragment;
-import android.content.Context;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -28,9 +24,7 @@ public class SearchFragment extends Fragment implements OnClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mSearchView = (ViewGroup)inflater.inflate(R.layout.fragment_search, container, false);
-		Button b_home = (Button) mSearchView.findViewById(R.id.Button_home);
-		b_home.setOnClickListener(this);
-		Button b_go_home = (Button) mSearchView.findViewById(R.id.Button_go_home);
+		Button b_go_home = (Button) mSearchView.findViewById(R.id.Button_set_home);
 		b_go_home .setOnClickListener(this); 
 		Button b_search = (Button) mSearchView.findViewById(R.id.Button_search);
 		b_search.setOnClickListener(this); 
@@ -44,12 +38,8 @@ public class SearchFragment extends Fragment implements OnClickListener {
 	public void onClick(View view) {
 		// TODO Auto-generated method stub
 		switch (view.getId()) {
-		case R.id.Button_go_home:
-			Toast.makeText(getActivity().getApplicationContext(), "GO HOME",
-					Toast.LENGTH_LONG).show();
-			break;
 		case R.id.Button_home:
-			Toast.makeText(getActivity().getApplicationContext(), "THIS IS HOME",
+			Toast.makeText(getActivity().getApplicationContext(), "GO HOME",
 					Toast.LENGTH_LONG).show();
 			break;
 		case R.id.Button_search:
