@@ -21,6 +21,8 @@
     <string name="Question2">I\'m at home!</string>
     <string name="Button_home">Set home</string>
     
+     <string name="Lat">Latitude</string>
+    <string name="Long">Longitude</string>
     
 
 </resources>
