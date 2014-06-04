@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 public class GuideFragment  extends Fragment implements SensorEventListener {
@@ -96,6 +97,9 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 
 			mGravity = new float[3];
+			
+			
+			
 			System.arraycopy(event.values, 0, mGravity, 0, 3);
 
 		} 
@@ -106,6 +110,12 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 
 			mGeomagnetic = new float[3];
 			System.arraycopy(event.values, 0, mGeomagnetic, 0, 3);
+			TextView text = (TextView) mSearchView.findViewById(R.id.x);
+			text.setText( Float.toString(mGeomagnetic[0]) );
+			text = (TextView) mSearchView.findViewById(R.id.y);
+			text.setText( Float.toString(mGeomagnetic[1]) );
+			text = (TextView) mSearchView.findViewById(R.id.z);
+			text.setText( Float.toString(mGeomagnetic[2]) );
 
 		}
 
