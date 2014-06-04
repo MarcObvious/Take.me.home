@@ -32,9 +32,7 @@ public class SearchFragment extends Fragment implements OnClickListener {
 		b_search.setOnClickListener(this); 
 
 		return mSearchView;
-
 	}
-
 
 	@Override
 	public void onClick(View view) {
