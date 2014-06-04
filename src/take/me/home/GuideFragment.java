@@ -15,11 +15,11 @@ public class GuideFragment  extends Fragment{
 
 	}
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		//mSearchView = (ViewGroup)inflater.inflate(R.layout.fragment_search, container, false);
-		GLSurfaceView view = new GLSurfaceView(this.getActivity());
-	    view.setRenderer(new OpenGLRenderer());
-	    this.getActivity().setContentView(view);
-	}
+//	@Override
+//	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//		//mSearchView = (ViewGroup)inflater.inflate(R.layout.fragment_search, container, false);
+//		GLSurfaceView view = new GLSurfaceView(this.getActivity());
+//	    view.setRenderer(new OpenGLRenderer());
+//	    this.getActivity().setContentView(view);
+//	}
 }
