@@ -122,6 +122,8 @@ public class SearchFragment extends Fragment implements OnClickListener {
 
 		private void makeUseOfNewLocation(Location location) {
 			loc = location;
+			loc.getLatitude();
+			loc.getLongitude();
 			
 		}
 }

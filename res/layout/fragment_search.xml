@@ -67,5 +67,38 @@
         android:layout_alignRight="@+id/Button_go_home"
         android:layout_marginBottom="90dp"
         android:text="@string/Button_home" />
+ <TextView
+        android:id="@+id/Longitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/Latitude"
+        android:layout_alignBottom="@+id/Latitude"
+        android:layout_alignLeft="@+id/Button_home"
+        android:text="@string/Long" />
+    
+    <TextView
+        android:id="@+id/Latitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/Question"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="48dp"
+        android:text="@string/Lat" />
+
+    <TextView
+        android:id="@+id/latitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Longitude"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/longitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+		android:layout_below="@id/Latitude"
+        android:text="0" />
+
+   
 
 </RelativeLayout>
