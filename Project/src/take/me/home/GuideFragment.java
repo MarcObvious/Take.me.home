@@ -48,15 +48,15 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		accelerometer = mSensorManager
 				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		// Get a reference to the magnetometer
-				magnetometer = mSensorManager
-						.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+		magnetometer = mSensorManager
+				.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mSearchView = (ViewGroup)inflater.inflate(R.layout.fragment_guide, container, false);
-		
+
 		mCompassArrow = new CompassArrowView(getActivity().getApplicationContext());
 
 		mSearchView.addView(mCompassArrow);
@@ -64,7 +64,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		return mSearchView;
 
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -73,6 +73,9 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		// Register for sensor updates
 
 		mSensorManager.registerListener(this, accelerometer,
+				SensorManager.SENSOR_DELAY_NORMAL);
+		
+		mSensorManager.registerListener(this, magnetometer,
 				SensorManager.SENSOR_DELAY_NORMAL);
 
 	}
@@ -89,16 +92,16 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 	public void onSensorChanged(SensorEvent event) {
 
 		// Acquire accelerometer event data
-		
+
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 
 			mGravity = new float[3];
 			System.arraycopy(event.values, 0, mGravity, 0, 3);
 
 		} 
-		
+
 		// Acquire magnetometer event data
-		
+
 		else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 
 			mGeomagnetic = new float[3];
@@ -156,7 +159,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	public class CompassArrowView extends View {
 
 		Bitmap mBitmap = BitmapFactory.decodeResource(getResources(),
