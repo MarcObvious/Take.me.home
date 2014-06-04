@@ -32,14 +32,11 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		Button b_home = (Button) mSettingsView.findViewById(R.id.Button_set_home);
 		b_home.setOnClickListener(this);
 		
-<<<<<<< HEAD:Project/src/take/me/home/SettingsFragment.java
-=======
 		Button b_fake = (Button) mSettingsView.findViewById(R.id.Button_fake_home);
 		b_fake.setOnClickListener(this);
 		
 		drawLocation();
 
->>>>>>> e01e0693bb49110a1e75b1a51606b52feb5a7192:src/take/me/home/SettingsFragment.java
 		return mSettingsView;
 
 	}
