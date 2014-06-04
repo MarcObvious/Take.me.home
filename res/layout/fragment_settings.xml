@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/Question2"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:text="@string/Button_home" />
 
     <TextView
@@ -31,6 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/Button_set_home"
+        android:layout_marginTop="45dp"
         android:text="@string/Lat" />
 
     <TextView
@@ -46,6 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@id/Button_set_home"
+        android:layout_marginTop="45dp"
         android:text="@string/Long" />
 
     <TextView

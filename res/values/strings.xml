@@ -24,5 +24,10 @@
      <string name="Lat">Home Latitude</string>
     <string name="Long">Home Longitude</string>
     
+    
+    
+     <string name="DestLat">Destination Latitude</string>
+    <string name="DestLong">Destination Longitude</string>
+    
 
 </resources>
