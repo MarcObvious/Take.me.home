@@ -62,9 +62,9 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 	}
 	public void getFakeLocation() {
 		Random r = new Random();
-//		_lat = r.nextInt(0 - 1000) + 10;
+		_lat = r.nextDouble() *10;
 		
-	//	_lon = r.nextInt(-1000 - 0) + 10;
+		_lon = r.nextDouble() *10;
 		}
 
 	public void getLocationClicked() {
@@ -123,12 +123,12 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		
 		TextView lat = (TextView) mSettingsView.findViewById(R.id.latitude);
 	
-		lat.append( Double.toString(_lat) );
+		lat.setText( Double.toString(_lat) );
 		
 
 		TextView lon = (TextView) mSettingsView.findViewById(R.id.longitude);
 	
-		lon.append( Double.toString(_lon) );
+		lon.setText( Double.toString(_lon) );
 		
 
 		
