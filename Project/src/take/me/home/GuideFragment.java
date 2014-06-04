@@ -2,6 +2,9 @@ package take.me.home;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -53,7 +56,10 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mSearchView = (ViewGroup)inflater.inflate(R.layout.fragment_guide, container, false);
+		
+		mCompassArrow = new CompassArrowView(getActivity().getApplicationContext());
 
+		mSearchView.addView(mCompassArrow);
 
 		return mSearchView;
 
@@ -176,8 +182,8 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		// Compute location of compass arrow
 		@Override
 		protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-			mParentWidth = mFrame.getWidth();
-			mParentHeight = mFrame.getHeight();
+			mParentWidth = mSearchView.getWidth();
+			mParentHeight = mSearchView.getHeight();
 
 			mParentCenterX = mParentWidth / 2;
 			mParentCenterY = mParentHeight / 2;

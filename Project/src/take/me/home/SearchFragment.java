@@ -25,11 +25,11 @@ public class SearchFragment extends Fragment implements OnClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mSearchView = (ViewGroup)inflater.inflate(R.layout.fragment_search, container, false);
-//		Button b_go_home = (Button) mSearchView.findViewById(R.id.Button_set_home);
-//		b_go_home .setOnClickListener(this); 
-//		
-//		Button b_search = (Button) mSearchView.findViewById(R.id.Button_search);
-//		b_search.setOnClickListener(this); 
+		Button b_go_home = (Button) mSearchView.findViewById(R.id.Button_home);
+		b_go_home .setOnClickListener(this); 
+		
+		Button b_search = (Button) mSearchView.findViewById(R.id.Button_search);
+		b_search.setOnClickListener(this); 
 
 		return mSearchView;
 
