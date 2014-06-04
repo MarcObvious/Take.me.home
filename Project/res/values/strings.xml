@@ -24,6 +24,6 @@
     <string name="Button_home">Set home</string>
     <string name="Lat">Home Latitude</string>
     <string name="Long">Home Longitude</string>
-    <string name="fake_home">Fake home</string>
+    <string name="Button_fake_home">Fake home</string>
 
 </resources>
