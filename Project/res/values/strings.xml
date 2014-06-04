@@ -22,8 +22,15 @@
     <!-- Settings fragment -->
     <string name="Question2">I\'m at home!</string>
     <string name="Button_home">Set home</string>
-    <string name="Lat">Home Latitude</string>
-    <string name="Long">Home Longitude</string>
+    <string name="HomeLat">Home Latitude</string>
+    <string name="HomeLong">Home Longitude</string>
     <string name="Button_fake_home">Fake home</string>
+    
+     <!-- Settings guide -->
+    <string name="ActLat">Actual Latitude</string>
+    <string name="ActLong">Actual Longitude</string>
+    <string name="X">X</string>
+    <string name="Y">Y</string>
+    <string name="Z">Z</string>
 
 </resources>
