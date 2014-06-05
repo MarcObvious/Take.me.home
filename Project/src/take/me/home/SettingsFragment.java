@@ -4,6 +4,7 @@ import java.util.Random;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -22,8 +23,6 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 	private ViewGroup mSettingsView;
 	private final static String LOG_TAG = "SEARCH FRAGMENT";
 	private Location loc;
-	private double _lat = 0;
-	private double _lon = 0;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,10 +34,22 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		Button b_fake = (Button) mSettingsView.findViewById(R.id.Button_fake_home);
 		b_fake.setOnClickListener(this);
 		
-		drawLocation();
+		drawLocation(loc);
 
 		return mSettingsView;
 
+	}
+	
+	public void saveLocation() {
+		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+		
+		SharedPreferences.Editor editor = sharedPref.edit();
+		
+		editor.putFloat("lat_home", (float) loc.getLatitude());
+		
+		editor.putFloat("lon_home", (float) loc.getLongitude());
+		
+		editor.commit();
 	}
 
 	@Override
@@ -51,7 +62,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 			break;
 		case R.id.Button_fake_home:
 			getFakeLocation();
-			drawLocation();
+			drawLocation(loc);
 			Toast.makeText(getActivity().getApplicationContext(), "THIS IS HOME",
 					Toast.LENGTH_LONG).show();
 			break;
@@ -62,9 +73,16 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 	}
 	public void getFakeLocation() {
 		Random r = new Random();
-		_lat = r.nextDouble() *10;
+		Double _lat = r.nextDouble() *100;
 		
-		_lon = r.nextDouble() *10;
+		Double _lon = r.nextDouble() *100;
+		
+		  Location loc = new Location("");
+		  loc.setLatitude(_lat);
+		  loc.setLongitude(_lon);
+		  
+		  drawLocation(loc);
+		
 		}
 
 	public void getLocationClicked() {
@@ -119,15 +137,15 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		}
 	}
 	
-	private void drawLocation() {
+	private void drawLocation(Location loc) {
 		
 		TextView lat = (TextView) mSettingsView.findViewById(R.id.latitude);
 	
-		lat.setText( Double.toString(_lat) );	
+		lat.setText( Double.toString(loc.getLatitude()) );	
 
 		TextView lon = (TextView) mSettingsView.findViewById(R.id.longitude);
 	
-		lon.setText( Double.toString(_lon) );
+		lon.setText( Double.toString(loc.getLongitude()) );
 		
 
 		
@@ -135,10 +153,8 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 
 	private void makeUseOfNewLocation(Location location) {
 		loc = location;
-		_lat = location.getLatitude();
-		_lon = location.getLongitude();
 		
-		drawLocation();
+		drawLocation(loc);
 		
 	}
 }
