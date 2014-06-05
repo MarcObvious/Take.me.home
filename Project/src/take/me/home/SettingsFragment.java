@@ -34,7 +34,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		Button b_fake = (Button) mSettingsView.findViewById(R.id.Button_fake_home);
 		b_fake.setOnClickListener(this);
 		
-		drawLocation(loc);
+		//drawLocation(loc);
 
 		return mSettingsView;
 
