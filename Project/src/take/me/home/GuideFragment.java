@@ -201,6 +201,38 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 	}
 
 
+	private double degreesToRotate (Location loc_act,Location loc_dest){
+		
+		//Get coordinates
+		double lop = loc_act.getLongitude();
+		double lap = loc_act.getLatitude();
+		double lx = loc_dest.getLongitude(); 
+		double ly = loc_dest.getLatitude();
+		//Difference in x and y, and parsed to KM
+		double x = (lx-lop)*113.3;
+		double y = (ly-lap)*111.11;
+		//Distance and angle in absolute (rad=1)
+		double h = Math.sqrt(Math.pow(x/20000.38,2)+Math.pow(y/10001.75,2));
+		double angle = Math.toDegrees(Math.acos(h/(x/20000.38)));
+		//Summing the angle depending where it is(rad and º, so you can choose).
+		double anglerad;
+		if (x> 0 && y < 0){
+			angle = 360-angle;
+			anglerad = angle*Math.PI/180;
+		}else if (x< 0 && y < 0){
+			angle = 270-angle;
+			anglerad = angle*Math.PI/180;
+		}else if(x<0 && y>0){
+			angle = 180 - angle;
+			anglerad = angle*Math.PI/180;
+		}else{
+			anglerad = angle*Math.PI/180;
+		}
+		
+		//With the old orientation we can calculate the rotation we need
+		return angle; //the one we want to rotate, need to find it with old orientation
+	}
+	
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub
