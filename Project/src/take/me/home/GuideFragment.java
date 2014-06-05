@@ -2,6 +2,7 @@ package take.me.home;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -9,7 +10,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +22,10 @@ import android.widget.TextView;
 public class GuideFragment  extends Fragment implements SensorEventListener {
 	private ViewGroup mSearchView;
 	private final static String LOG_TAG = "GUIDE FRAGMENT";
-
+	private float default_value = 0;
+	
+	
+	private Location loc_dest;
 	//Sensor & SensorManager
 	private Sensor accelerometer;
 	private Sensor magnetometer;
@@ -35,7 +41,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 
 	// View showing the compass arrow
 	private CompassArrowView mCompassArrow;
-
+	
 
 
 	@Override
@@ -51,9 +57,42 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		// Get a reference to the magnetometer
 		magnetometer = mSensorManager
 				.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+		
+		if ( !getLocation() ) {
+			Log.e(LOG_TAG, "NO HOME LOCATION & NO DESTINATION LOCATION : ");
+		}
+		else {
+			TextView text = (TextView) mSearchView.findViewById(R.id.dest_latitude);
+			text.setText( Double.toString(loc_dest.getLatitude()) );
+			
+			text = (TextView) mSearchView.findViewById(R.id.destlongitude);
+			text.setText( Double.toString(loc_dest.getLongitude()) );
+		}
 
 	}
-
+	
+	private boolean getLocation () {
+		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+		
+		Float lat = sharedPref.getFloat("lat_home", default_value);
+		Float lon =  sharedPref.getFloat("lon_home", default_value);
+		
+		if (lat == default_value && lon == default_value) {
+			lat = sharedPref.getFloat("lat_dest", default_value);
+			lon = sharedPref.getFloat("lon_dest", default_value);
+			
+		}
+		
+		if (lat == default_value && lon == default_value) return false;
+		
+		 loc_dest = new Location("");
+		 
+		 loc_dest.setLatitude(lat);
+		 loc_dest.setLongitude(lon);
+		
+		return true;
+		
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mSearchView = (ViewGroup)inflater.inflate(R.layout.fragment_guide, container, false);
@@ -87,6 +126,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		// Unregister all sensors
 		mSensorManager.unregisterListener(this);
 
+		
 	}
 
 	@Override
