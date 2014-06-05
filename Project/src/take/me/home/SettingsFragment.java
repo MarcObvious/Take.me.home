@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,8 +23,21 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 
 	private ViewGroup mSettingsView;
 	private final static String LOG_TAG = "SEARCH FRAGMENT";
+	private float default_value = 0;
 	private Location loc;
 
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		if (!getLocation()) {
+			loc = new Location("");
+
+			loc.setLatitude(0.0);
+			loc.setLongitude(0.0);
+			
+		}
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mSettingsView = (ViewGroup)inflater.inflate(R.layout.fragment_settings, container, false);
@@ -34,9 +48,26 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		Button b_fake = (Button) mSettingsView.findViewById(R.id.Button_fake_home);
 		b_fake.setOnClickListener(this);
 		
-		//drawLocation(loc);
+		drawLocation(loc);
 
 		return mSettingsView;
+
+	}
+	
+	private boolean getLocation () {
+		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+
+		Float lat = sharedPref.getFloat("lat_home", default_value);
+		Float lon =  sharedPref.getFloat("lon_home", default_value);
+
+		if (lat == default_value && lon == default_value) return false;
+
+		loc = new Location("");
+
+		loc.setLatitude((double) lat);
+		loc.setLongitude((double) lon);
+
+		return true;
 
 	}
 	
@@ -62,7 +93,6 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 			break;
 		case R.id.Button_fake_home:
 			getFakeLocation();
-			//drawLocation(loc);
 			saveLocation();
 			Toast.makeText(getActivity().getApplicationContext(), "THIS IS HOME",
 					Toast.LENGTH_LONG).show();
@@ -74,9 +104,9 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 	}
 	public void getFakeLocation() {
 		Random r = new Random();
-		Double _lat = r.nextDouble() *100;
+		Double _lat = r.nextDouble() *10;
 		
-		Double _lon = r.nextDouble() *100;
+		Double _lon = r.nextDouble() *10;
 		
 		  loc = new Location("");
 		  loc.setLatitude(_lat);

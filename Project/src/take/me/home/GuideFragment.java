@@ -23,9 +23,10 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 	private ViewGroup mSearchView;
 	private final static String LOG_TAG = "GUIDE FRAGMENT";
 	private float default_value = 0;
-	
-	
+
 	private Location loc_dest;
+	private Location loc_act;
+
 	//Sensor & SensorManager
 	private Sensor accelerometer;
 	private Sensor magnetometer;
@@ -41,7 +42,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 
 	// View showing the compass arrow
 	private CompassArrowView mCompassArrow;
-	
+
 
 
 	@Override
@@ -57,32 +58,28 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		// Get a reference to the magnetometer
 		magnetometer = mSensorManager
 				.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-		
-	
-
 	}
-	
+
 	private boolean getLocation () {
 		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-		
+
 		Float lat = sharedPref.getFloat("lat_home", default_value);
 		Float lon =  sharedPref.getFloat("lon_home", default_value);
-		
+
 		if (lat == default_value && lon == default_value) {
 			lat = sharedPref.getFloat("lat_dest", default_value);
 			lon = sharedPref.getFloat("lon_dest", default_value);
-			
 		}
-		
+
 		if (lat == default_value && lon == default_value) return false;
-		
-		 loc_dest = new Location("");
-		 
-		 loc_dest.setLatitude((double) lat);
-		 loc_dest.setLongitude((double) lon);
-		
+
+		loc_dest = new Location("");
+
+		loc_dest.setLatitude((double) lat);
+		loc_dest.setLongitude((double) lon);
+
 		return true;
-		
+
 	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -91,16 +88,17 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		mCompassArrow = new CompassArrowView(getActivity().getApplicationContext());
 
 		mSearchView.addView(mCompassArrow);
-		
+
 		if ( !getLocation() ) {
 			Log.e(LOG_TAG, "NO HOME LOCATION & NO DESTINATION LOCATION : ");
 		}
 		else {
 			Log.i(LOG_TAG, "LONGITUDE" + Double.toString(loc_dest.getLongitude()));
 			Log.i(LOG_TAG, "LATITUDE" + Double.toString(loc_dest.getLatitude()));
+			
 			TextView text = (TextView) mSearchView.findViewById(R.id.destlatitude);
 			text.setText( Double.toString(loc_dest.getLatitude()) );
-			
+
 			text = (TextView) mSearchView.findViewById(R.id.destlongitude);
 			text.setText( Double.toString(loc_dest.getLongitude()) );
 		}
@@ -112,13 +110,11 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 	@Override
 	public void onResume() {
 		super.onResume();
-
-
 		// Register for sensor updates
 
 		mSensorManager.registerListener(this, accelerometer,
 				SensorManager.SENSOR_DELAY_NORMAL);
-		
+
 		mSensorManager.registerListener(this, magnetometer,
 				SensorManager.SENSOR_DELAY_NORMAL);
 
@@ -129,8 +125,6 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 
 		// Unregister all sensors
 		mSensorManager.unregisterListener(this);
-
-		
 	}
 
 	@Override
@@ -141,9 +135,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 
 			mGravity = new float[3];
-			
-			
-			
+
 			System.arraycopy(event.values, 0, mGravity, 0, 3);
 
 		} 
@@ -154,7 +146,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 
 			mGeomagnetic = new float[3];
 			System.arraycopy(event.values, 0, mGeomagnetic, 0, 3);
-			
+
 			TextView text = (TextView) mSearchView.findViewById(R.id.x);
 			text.setText( Float.toString(mGeomagnetic[0]) );
 			text = (TextView) mSearchView.findViewById(R.id.y);

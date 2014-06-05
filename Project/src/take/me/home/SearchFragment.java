@@ -51,7 +51,4 @@ public class SearchFragment extends Fragment implements OnClickListener {
 			break;
 		}
 	}
-
-
-
 }
