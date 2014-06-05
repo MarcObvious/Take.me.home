@@ -62,7 +62,8 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 			break;
 		case R.id.Button_fake_home:
 			getFakeLocation();
-			drawLocation(loc);
+			//drawLocation(loc);
+			saveLocation();
 			Toast.makeText(getActivity().getApplicationContext(), "THIS IS HOME",
 					Toast.LENGTH_LONG).show();
 			break;
@@ -77,7 +78,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		
 		Double _lon = r.nextDouble() *100;
 		
-		  Location loc = new Location("");
+		  loc = new Location("");
 		  loc.setLatitude(_lat);
 		  loc.setLongitude(_lon);
 		  

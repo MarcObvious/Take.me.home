@@ -58,16 +58,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		magnetometer = mSensorManager
 				.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 		
-		if ( !getLocation() ) {
-			Log.e(LOG_TAG, "NO HOME LOCATION & NO DESTINATION LOCATION : ");
-		}
-		else {
-			TextView text = (TextView) mSearchView.findViewById(R.id.dest_latitude);
-			text.setText( Double.toString(loc_dest.getLatitude()) );
-			
-			text = (TextView) mSearchView.findViewById(R.id.destlongitude);
-			text.setText( Double.toString(loc_dest.getLongitude()) );
-		}
+	
 
 	}
 	
@@ -87,8 +78,8 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		
 		 loc_dest = new Location("");
 		 
-		 loc_dest.setLatitude(lat);
-		 loc_dest.setLongitude(lon);
+		 loc_dest.setLatitude((double) lat);
+		 loc_dest.setLongitude((double) lon);
 		
 		return true;
 		
@@ -100,6 +91,19 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		mCompassArrow = new CompassArrowView(getActivity().getApplicationContext());
 
 		mSearchView.addView(mCompassArrow);
+		
+		if ( !getLocation() ) {
+			Log.e(LOG_TAG, "NO HOME LOCATION & NO DESTINATION LOCATION : ");
+		}
+		else {
+			Log.i(LOG_TAG, "LONGITUDE" + Double.toString(loc_dest.getLongitude()));
+			Log.i(LOG_TAG, "LATITUDE" + Double.toString(loc_dest.getLatitude()));
+			TextView text = (TextView) mSearchView.findViewById(R.id.destlatitude);
+			text.setText( Double.toString(loc_dest.getLatitude()) );
+			
+			text = (TextView) mSearchView.findViewById(R.id.destlongitude);
+			text.setText( Double.toString(loc_dest.getLongitude()) );
+		}
 
 		return mSearchView;
 
@@ -150,6 +154,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 
 			mGeomagnetic = new float[3];
 			System.arraycopy(event.values, 0, mGeomagnetic, 0, 3);
+			
 			TextView text = (TextView) mSearchView.findViewById(R.id.x);
 			text.setText( Float.toString(mGeomagnetic[0]) );
 			text = (TextView) mSearchView.findViewById(R.id.y);
