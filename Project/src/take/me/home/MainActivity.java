@@ -12,8 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+	
+	private SearchFragment mSearchFragment;
+	private SettingsFragment mSettingsFragment;
+	private GuideFragment mGuideFragment;
+	private MapsFragment mMapsFragment;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -45,10 +49,22 @@ public class MainActivity extends Activity
         // update the main content by replacing fragments
     	Fragment fragment = null;
     	switch (position) {
-    		case 0: fragment = new SearchFragment(); break;
-    		case 1: fragment = new GuideFragment(); break;
-    		case 2: fragment = new MapsFragment(); break; 
-    		case 3: fragment = new SettingsFragment(); break;
+    		case 0:
+    			if (mSearchFragment == null) mSearchFragment = new SearchFragment();
+    			fragment = mSearchFragment;
+    			break;
+    		case 1:
+    			if (mGuideFragment == null) mGuideFragment = new GuideFragment();
+    			fragment = mGuideFragment;
+    			break;
+    		case 2:
+    			if (mMapsFragment == null) mMapsFragment = new MapsFragment();
+    			fragment = mMapsFragment;
+    			break; 
+    		case 3:
+    			if (mSettingsFragment == null) mSettingsFragment = new SettingsFragment();
+    			fragment = mSettingsFragment;
+    			break;
     		default: fragment = PlaceholderFragment.newInstance(position + 1);
     	}
     	
