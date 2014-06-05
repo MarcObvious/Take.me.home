@@ -1,7 +1,5 @@
 package take.me.home;
 
-import java.util.Random;
-
 import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -20,8 +18,8 @@ import android.widget.Toast;
 
 public class SettingsFragment extends Fragment implements OnClickListener {
 
-	private ViewGroup mSettingsView;
 	private final static String LOG_TAG = "SEARCH FRAGMENT";
+	private ViewGroup mSettingsView;
 	private Location loc;
 
 	@Override
@@ -72,19 +70,20 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 			break;
 		}
 	}
+	
 	public void getFakeLocation() {
+		/*
 		Random r = new Random();
 		Double _lat = r.nextDouble() *100;
-		
 		Double _lon = r.nextDouble() *100;
+		*/
 		
-		  loc = new Location("");
-		  loc.setLatitude(_lat);
-		  loc.setLongitude(_lon);
+		loc = new Location("");
+		loc.setLatitude(41.3869691/*_lat*/);
+		loc.setLongitude(2.1706107/*_lon*/);
 		  
-		  drawLocation(loc);
-		
-		}
+		drawLocation(loc);	
+	}
 
 	public void getLocationClicked() {
 		// Acquire a reference to the system Location Manager

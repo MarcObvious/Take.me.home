@@ -11,6 +11,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,18 +21,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-public class GuideFragment  extends Fragment implements SensorEventListener {
+public class GuideFragment  extends Fragment implements SensorEventListener, LocationListener {
 	private ViewGroup mSearchView;
 	private final static String LOG_TAG = "GUIDE FRAGMENT";
 	private float default_value = 0;
 	
 	
-	private Location loc_dest;
+	private Location loc_dest, currentLocation;
 	//Sensor & SensorManager
 	private Sensor accelerometer;
 	private Sensor magnetometer;
 	private SensorManager mSensorManager;
 
+	private LocationManager mLocationManager;
+	
 	// Storage for Sensor readings
 	private float[] mGravity = null;
 
@@ -38,6 +42,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 
 	// Rotation around the Z axis
 	private double mRotationInDegress;
+	private double mAngle;
 
 	// View showing the compass arrow
 	private CompassArrowView mCompassArrow;
@@ -47,19 +52,50 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getActivity();
+
 		// Get a reference to the SensorManager
 		mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-
 		// Get a reference to the accelerometer
-		accelerometer = mSensorManager
-				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		// Get a reference to the magnetometer
-		magnetometer = mSensorManager
-				.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+		magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 		
+		mLocationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+		startLocationUpdates();
+	}
 	
-
+	private double getRotationDegrees() {
+		return mRotationInDegress + mAngle;
+	}
+	
+	private void startLocationUpdates() {
+		if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+			mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 1, this);
+		if (mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+			mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1, 1, this);
+	}
+	
+	private void stopLocationUpdates() {
+		mLocationManager.removeUpdates(this);
+	}
+	
+	private void locationUpdated(Location location) {
+		currentLocation = location;
+		
+		TextView text = (TextView) mSearchView.findViewById(R.id.actlatitude);
+		text.setText( currentLocation == null ? "" : Double.toString(currentLocation.getLatitude()) );
+		text = (TextView) mSearchView.findViewById(R.id.actlongitude);
+		text.setText( currentLocation == null ? "" : Double.toString(currentLocation.getLongitude()) );
+		
+		if (loc_dest != null && currentLocation != null) {
+			mAngle = Math.toDegrees(loc_dest.getLatitude() == currentLocation.getLatitude() ? 0 : Math.atan((loc_dest.getLongitude() - currentLocation.getLongitude()) / (loc_dest.getLatitude() - currentLocation.getLatitude())));
+			if (loc_dest.getLatitude() < currentLocation.getLatitude()) mAngle += Math.toDegrees(Math.PI);
+			mCompassArrow.invalidate();
+			text = (TextView) mSearchView.findViewById(R.id.x);
+			text.setText( String.valueOf(mAngle) );
+			text = (TextView) mSearchView.findViewById(R.id.z);
+			text.setText( String.valueOf(currentLocation.bearingTo(loc_dest)) );
+		}
 	}
 	
 	private boolean getLocation () {
@@ -71,7 +107,6 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		if (lat == default_value && lon == default_value) {
 			lat = sharedPref.getFloat("lat_dest", default_value);
 			lon = sharedPref.getFloat("lon_dest", default_value);
-			
 		}
 		
 		if (lat == default_value && lon == default_value) return false;
@@ -84,6 +119,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		return true;
 		
 	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mSearchView = (ViewGroup)inflater.inflate(R.layout.fragment_guide, container, false);
@@ -105,32 +141,33 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 			text.setText( Double.toString(loc_dest.getLongitude()) );
 		}
 
-		return mSearchView;
+		Location tempLocation = new Location("");
+		tempLocation.setLatitude(41.3872545);
+		tempLocation.setLongitude(2.1728199);
+		locationUpdated(tempLocation);
 
+		return mSearchView;
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 
-
 		// Register for sensor updates
-
-		mSensorManager.registerListener(this, accelerometer,
-				SensorManager.SENSOR_DELAY_NORMAL);
+		mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+		mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
 		
-		mSensorManager.registerListener(this, magnetometer,
-				SensorManager.SENSOR_DELAY_NORMAL);
-
+		startLocationUpdates();
 	}
+	
 	@Override
 	public void onPause() {
 		super.onPause();
 
 		// Unregister all sensors
 		mSensorManager.unregisterListener(this);
-
 		
+		stopLocationUpdates();
 	}
 
 	@Override
@@ -139,13 +176,8 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 		// Acquire accelerometer event data
 
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-
 			mGravity = new float[3];
-			
-			
-			
 			System.arraycopy(event.values, 0, mGravity, 0, 3);
-
 		} 
 
 		// Acquire magnetometer event data
@@ -155,13 +187,14 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 			mGeomagnetic = new float[3];
 			System.arraycopy(event.values, 0, mGeomagnetic, 0, 3);
 			
+			/*
 			TextView text = (TextView) mSearchView.findViewById(R.id.x);
 			text.setText( Float.toString(mGeomagnetic[0]) );
 			text = (TextView) mSearchView.findViewById(R.id.y);
 			text.setText( Float.toString(mGeomagnetic[1]) );
 			text = (TextView) mSearchView.findViewById(R.id.z);
 			text.setText( Float.toString(mGeomagnetic[2]) );
-
+			*/
 		}
 
 		// If we have readings from both sensors then
@@ -176,16 +209,14 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 			// to compute the device's rotation with respect to
 			// a real world coordinate system
 
-			boolean success = SensorManager.getRotationMatrix(rotationMatrix,
-					null, mGravity, mGeomagnetic);
-
-			if (success) {
+			if (SensorManager.getRotationMatrix(rotationMatrix, null, mGravity, mGeomagnetic)) {
 
 				float orientationMatrix[] = new float[3];
 
 				// Returns the device's orientation given
 				// the rotationMatrix
 
+				SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X, rotationMatrix);
 				SensorManager.getOrientation(rotationMatrix, orientationMatrix);
 
 				// Get the rotation, measured in radians, around the Z-axis
@@ -195,7 +226,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 				float rotationInRadians = orientationMatrix[0];
 
 				// Convert from radians to degrees
-				mRotationInDegress = Math.toDegrees(rotationInRadians);
+				mRotationInDegress = mRotationInDegress * 0.8 + Math.toDegrees(rotationInRadians) * 0.2;
 
 				// Request redraw
 				mCompassArrow.invalidate();
@@ -211,8 +242,23 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// TODO Auto-generated method stub
+	}
 
+	@Override
+	public void onLocationChanged(Location location) {
+		locationUpdated(location);
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
 	}
 
 	public class CompassArrowView extends View {
@@ -235,6 +281,8 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 
 		public CompassArrowView(Context context) {
 			super(context);
+			
+			setAlpha(0.3f);
 		};
 
 		// Compute location of compass arrow
@@ -258,7 +306,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener {
 			canvas.save();
 
 			// Rotate this View
-			canvas.rotate((float) -mRotationInDegress, mParentCenterX,
+			canvas.rotate((float) -getRotationDegrees(), mParentCenterX,
 					mParentCenterY);
 
 			// Redraw this View
