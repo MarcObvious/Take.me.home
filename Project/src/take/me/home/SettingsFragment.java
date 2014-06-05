@@ -18,35 +18,64 @@ import android.widget.Toast;
 
 public class SettingsFragment extends Fragment implements OnClickListener {
 
-	private final static String LOG_TAG = "SEARCH FRAGMENT";
 	private ViewGroup mSettingsView;
+	private final static String LOG_TAG = "SEARCH FRAGMENT";
+	private float default_value = 0;
 	private Location loc;
 
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		if (!getLocation()) {
+			loc = new Location("");
+
+			loc.setLatitude(0.0);
+			loc.setLongitude(0.0);		
+		}
+	}
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mSettingsView = (ViewGroup)inflater.inflate(R.layout.fragment_settings, container, false);
-		
+
 		Button b_home = (Button) mSettingsView.findViewById(R.id.Button_set_home);
 		b_home.setOnClickListener(this);
-		
+
 		Button b_fake = (Button) mSettingsView.findViewById(R.id.Button_fake_home);
 		b_fake.setOnClickListener(this);
-		
-		//drawLocation(loc);
+
+		drawLocation(loc);
 
 		return mSettingsView;
 
 	}
-	
+
+	private boolean getLocation () {
+		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+
+		Float lat = sharedPref.getFloat("lat_home", default_value);
+		Float lon =  sharedPref.getFloat("lon_home", default_value);
+
+		if (lat == default_value && lon == default_value) return false;
+
+		loc = new Location("");
+
+		loc.setLatitude((double) lat);
+		loc.setLongitude((double) lon);
+
+		return true;
+
+	}
+
 	public void saveLocation() {
 		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-		
+
 		SharedPreferences.Editor editor = sharedPref.edit();
-		
+
 		editor.putFloat("lat_home", (float) loc.getLatitude());
-		
+
 		editor.putFloat("lon_home", (float) loc.getLongitude());
-		
+
 		editor.commit();
 	}
 
@@ -60,7 +89,6 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 			break;
 		case R.id.Button_fake_home:
 			getFakeLocation();
-			//drawLocation(loc);
 			saveLocation();
 			Toast.makeText(getActivity().getApplicationContext(), "THIS IS HOME",
 					Toast.LENGTH_LONG).show();
@@ -74,6 +102,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 	public void getFakeLocation() {
 		/*
 		Random r = new Random();
+		
 		Double _lat = r.nextDouble() *100;
 		Double _lon = r.nextDouble() *100;
 		*/
@@ -98,7 +127,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 
 				Toast.makeText(getActivity().getApplicationContext(),
 						"New Location obtained.", Toast.LENGTH_LONG).show();
-				
+
 				makeUseOfNewLocation(location);
 				locationManager.removeUpdates(this);
 
@@ -136,25 +165,25 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 					Toast.LENGTH_LONG).show();
 		}
 	}
-	
+
 	private void drawLocation(Location loc) {
-		
+
 		TextView lat = (TextView) mSettingsView.findViewById(R.id.latitude);
-	
+
 		lat.setText( Double.toString(loc.getLatitude()) );	
 
 		TextView lon = (TextView) mSettingsView.findViewById(R.id.longitude);
-	
-		lon.setText( Double.toString(loc.getLongitude()) );
-		
 
-		
+		lon.setText( Double.toString(loc.getLongitude()) );
+
+
+
 	}
 
 	private void makeUseOfNewLocation(Location location) {
 		loc = location;
-		
+
 		drawLocation(loc);
-		
+
 	}
 }

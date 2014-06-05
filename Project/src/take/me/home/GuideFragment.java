@@ -28,6 +28,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 	
 	
 	private Location loc_dest, currentLocation;
+
 	//Sensor & SensorManager
 	private Sensor accelerometer;
 	private Sensor magnetometer;
@@ -46,7 +47,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 
 	// View showing the compass arrow
 	private CompassArrowView mCompassArrow;
-	
+
 
 
 	@Override
@@ -100,24 +101,24 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 	
 	private boolean getLocation () {
 		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-		
+
 		Float lat = sharedPref.getFloat("lat_home", default_value);
 		Float lon =  sharedPref.getFloat("lon_home", default_value);
-		
+
 		if (lat == default_value && lon == default_value) {
 			lat = sharedPref.getFloat("lat_dest", default_value);
 			lon = sharedPref.getFloat("lon_dest", default_value);
 		}
-		
+
 		if (lat == default_value && lon == default_value) return false;
-		
-		 loc_dest = new Location("");
-		 
-		 loc_dest.setLatitude((double) lat);
-		 loc_dest.setLongitude((double) lon);
-		
+
+		loc_dest = new Location("");
+
+		loc_dest.setLatitude((double) lat);
+		loc_dest.setLongitude((double) lon);
+
 		return true;
-		
+
 	}
 	
 	@Override
@@ -127,16 +128,17 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 		mCompassArrow = new CompassArrowView(getActivity().getApplicationContext());
 
 		mSearchView.addView(mCompassArrow);
-		
+
 		if ( !getLocation() ) {
 			Log.e(LOG_TAG, "NO HOME LOCATION & NO DESTINATION LOCATION : ");
 		}
 		else {
 			Log.i(LOG_TAG, "LONGITUDE" + Double.toString(loc_dest.getLongitude()));
 			Log.i(LOG_TAG, "LATITUDE" + Double.toString(loc_dest.getLatitude()));
+			
 			TextView text = (TextView) mSearchView.findViewById(R.id.destlatitude);
 			text.setText( Double.toString(loc_dest.getLatitude()) );
-			
+
 			text = (TextView) mSearchView.findViewById(R.id.destlongitude);
 			text.setText( Double.toString(loc_dest.getLongitude()) );
 		}
@@ -239,7 +241,40 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 
 	}
 
-
+	/*
+	private double degreesToRotate (Location loc_act,Location loc_dest){
+		
+		//Get coordinates
+		double lop = loc_act.getLongitude();
+		double lap = loc_act.getLatitude();
+		double lx = loc_dest.getLongitude(); 
+		double ly = loc_dest.getLatitude();
+		//Difference in x and y, and parsed to KM
+		double x = (lx-lop)*113.3;
+		double y = (ly-lap)*111.11;
+		//Distance and angle in absolute (rad=1)
+		double h = Math.sqrt(Math.pow(x/20000.38,2)+Math.pow(y/10001.75,2));
+		double angle = Math.toDegrees(Math.acos(h/(x/20000.38)));
+		//Summing the angle depending where it is(rad and º, so you can choose).
+		double anglerad;
+		if (x> 0 && y < 0){
+			angle = 360-angle;
+			anglerad = angle*Math.PI/180;
+		}else if (x< 0 && y < 0){
+			angle = 270-angle;
+			anglerad = angle*Math.PI/180;
+		}else if(x<0 && y>0){
+			angle = 180 - angle;
+			anglerad = angle*Math.PI/180;
+		}else{
+			anglerad = angle*Math.PI/180;
+		}
+		
+		//With the old orientation we can calculate the rotation we need
+		return angle; //the one we want to rotate, need to find it with old orientation
+	}
+	*/
+	
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 	}
