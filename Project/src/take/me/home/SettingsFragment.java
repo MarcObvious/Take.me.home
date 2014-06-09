@@ -1,5 +1,7 @@
 package take.me.home;
 
+import java.util.Random;
+
 import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -84,13 +86,14 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		switch (view.getId()) {
 		case R.id.Button_set_home:
 			getLocationClicked();
+			saveLocation();
 			Toast.makeText(getActivity().getApplicationContext(), "THIS IS HOME",
 					Toast.LENGTH_LONG).show();
 			break;
 		case R.id.Button_fake_home:
 			getFakeLocation();
 			saveLocation();
-			Toast.makeText(getActivity().getApplicationContext(), "THIS IS HOME",
+			Toast.makeText(getActivity().getApplicationContext(), "THIS IS FAKE HOME",
 					Toast.LENGTH_LONG).show();
 			break;
 		default:
@@ -98,25 +101,26 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 			break;
 		}
 	}
-	
+
 	public void getFakeLocation() {
-		/*
+
 		Random r = new Random();
-		
+
 		Double _lat = r.nextDouble() *100;
 		Double _lon = r.nextDouble() *100;
-		*/
-		
+
+
 		loc = new Location("");
-		loc.setLatitude(41.3869691/*_lat*/);
-		loc.setLongitude(2.1706107/*_lon*/);
-		  
+		loc.setLatitude(/*41.3869691*/_lat);
+		loc.setLongitude(/*2.1706107*/_lon);
+
 		drawLocation(loc);	
 	}
 
 	public void getLocationClicked() {
 		// Acquire a reference to the system Location Manager
-		final LocationManager locationManager = (LocationManager) this.getActivity()
+				
+		final LocationManager locationManager = (LocationManager) getActivity()
 				.getSystemService(Context.LOCATION_SERVICE);
 
 		// Define a listener that responds to location updates
@@ -160,8 +164,23 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 						.show();
 			}
 
-		} else {
-			Toast.makeText(getActivity().getApplicationContext(), "GPS is not enabled.",
+		} else if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+			Log.d(LOG_TAG, "locationManager.isProviderEnabled = true/network");
+			locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, locationListener, null);
+			wait(100);
+			//locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+			Location location = locationManager
+					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+			if (location != null) {
+				makeUseOfNewLocation(location);
+			} else {
+				Toast.makeText(getActivity().getApplicationContext(),
+						"Network has yet to calculate location.", Toast.LENGTH_LONG)
+						.show();
+			}
+		}
+		else {
+			Toast.makeText(getActivity().getApplicationContext(), "GPS is not enabled, and Network Position disponible",
 					Toast.LENGTH_LONG).show();
 		}
 	}

@@ -25,8 +25,8 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 	private ViewGroup mSearchView;
 	private final static String LOG_TAG = "GUIDE FRAGMENT";
 	private float default_value = 0;
-	
-	
+
+
 	private Location loc_dest, currentLocation;
 
 	//Sensor & SensorManager
@@ -35,7 +35,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 	private SensorManager mSensorManager;
 
 	private LocationManager mLocationManager;
-	
+
 	// Storage for Sensor readings
 	private float[] mGravity = null;
 
@@ -60,34 +60,34 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 		accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		// Get a reference to the magnetometer
 		magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-		
+
 		mLocationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
 		startLocationUpdates();
 	}
-	
+
 	private double getRotationDegrees() {
 		return mRotationInDegress + mAngle;
 	}
-	
+
 	private void startLocationUpdates() {
 		if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
 			mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 1, this);
 		if (mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
 			mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1, 1, this);
 	}
-	
+
 	private void stopLocationUpdates() {
 		mLocationManager.removeUpdates(this);
 	}
-	
+
 	private void locationUpdated(Location location) {
 		currentLocation = location;
-		
+
 		TextView text = (TextView) mSearchView.findViewById(R.id.actlatitude);
 		text.setText( currentLocation == null ? "" : Double.toString(currentLocation.getLatitude()) );
 		text = (TextView) mSearchView.findViewById(R.id.actlongitude);
 		text.setText( currentLocation == null ? "" : Double.toString(currentLocation.getLongitude()) );
-		
+
 		if (loc_dest != null && currentLocation != null) {
 			mAngle = Math.toDegrees(loc_dest.getLatitude() == currentLocation.getLatitude() ? 0 : Math.atan((loc_dest.getLongitude() - currentLocation.getLongitude()) / (loc_dest.getLatitude() - currentLocation.getLatitude())));
 			if (loc_dest.getLatitude() < currentLocation.getLatitude()) mAngle += Math.toDegrees(Math.PI);
@@ -98,7 +98,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 			text.setText( String.valueOf(currentLocation.bearingTo(loc_dest)) );
 		}
 	}
-	
+
 	private boolean getLocation () {
 		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 
@@ -120,7 +120,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 		return true;
 
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mSearchView = (ViewGroup)inflater.inflate(R.layout.fragment_guide, container, false);
@@ -135,7 +135,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 		else {
 			Log.i(LOG_TAG, "LONGITUDE" + Double.toString(loc_dest.getLongitude()));
 			Log.i(LOG_TAG, "LATITUDE" + Double.toString(loc_dest.getLatitude()));
-			
+
 			TextView text = (TextView) mSearchView.findViewById(R.id.destlatitude);
 			text.setText( Double.toString(loc_dest.getLatitude()) );
 
@@ -158,17 +158,17 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 		// Register for sensor updates
 		mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 		mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
-		
+
 		startLocationUpdates();
 	}
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();
 
 		// Unregister all sensors
 		mSensorManager.unregisterListener(this);
-		
+
 		stopLocationUpdates();
 	}
 
@@ -188,7 +188,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 
 			mGeomagnetic = new float[3];
 			System.arraycopy(event.values, 0, mGeomagnetic, 0, 3);
-			
+
 			/*
 			TextView text = (TextView) mSearchView.findViewById(R.id.x);
 			text.setText( Float.toString(mGeomagnetic[0]) );
@@ -196,7 +196,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 			text.setText( Float.toString(mGeomagnetic[1]) );
 			text = (TextView) mSearchView.findViewById(R.id.z);
 			text.setText( Float.toString(mGeomagnetic[2]) );
-			*/
+			 */
 		}
 
 		// If we have readings from both sensors then
@@ -243,7 +243,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 
 	/*
 	private double degreesToRotate (Location loc_act,Location loc_dest){
-		
+
 		//Get coordinates
 		double lop = loc_act.getLongitude();
 		double lap = loc_act.getLatitude();
@@ -255,7 +255,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 		//Distance and angle in absolute (rad=1)
 		double h = Math.sqrt(Math.pow(x/20000.38,2)+Math.pow(y/10001.75,2));
 		double angle = Math.toDegrees(Math.acos(h/(x/20000.38)));
-		//Summing the angle depending where it is(rad and º, so you can choose).
+		//Summing the angle depending where it is(rad and ï¿½, so you can choose).
 		double anglerad;
 		if (x> 0 && y < 0){
 			angle = 360-angle;
@@ -269,12 +269,12 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 		}else{
 			anglerad = angle*Math.PI/180;
 		}
-		
+
 		//With the old orientation we can calculate the rotation we need
 		return angle; //the one we want to rotate, need to find it with old orientation
 	}
-	*/
-	
+	 */
+
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 	}
@@ -316,7 +316,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 
 		public CompassArrowView(Context context) {
 			super(context);
-			
+
 			setAlpha(0.3f);
 		};
 
