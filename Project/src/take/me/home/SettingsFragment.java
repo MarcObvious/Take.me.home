@@ -6,8 +6,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,24 +16,20 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SettingsFragment extends Fragment implements OnClickListener {
+public class SettingsFragment extends Fragment implements OnClickListener, LocationUpdatesListener {
 
 	private ViewGroup mSettingsView;
 	private final static String LOG_TAG = "SEARCH FRAGMENT";
 	private float default_value = 0;
-	private Location loc;
+	private Location homeLocation, currentLocation;
+
+	private boolean saveOnNextUpdate = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		if (!getLocation()) {
-			loc = new Location("");
-
-			loc.setLatitude(0.0);
-			loc.setLongitude(0.0);		
-		}
 	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mSettingsView = (ViewGroup)inflater.inflate(R.layout.fragment_settings, container, false);
@@ -46,10 +40,10 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		Button b_fake = (Button) mSettingsView.findViewById(R.id.Button_fake_home);
 		b_fake.setOnClickListener(this);
 
-		drawLocation(loc);
+		if (getLocation())
+			drawLocation(homeLocation);
 
 		return mSettingsView;
-
 	}
 
 	private boolean getLocation () {
@@ -60,48 +54,51 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 
 		if (lat == default_value && lon == default_value) return false;
 
-		loc = new Location("");
+		homeLocation = new Location("");
 
-		loc.setLatitude((double) lat);
-		loc.setLongitude((double) lon);
+		homeLocation.setLatitude((double) lat);
+		homeLocation.setLongitude((double) lon);
 
 		return true;
 
 	}
 
 	public void saveLocation() {
-		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+		if (currentLocation == null) {
+			saveOnNextUpdate = true;
+			return;
+		}
 
-		SharedPreferences.Editor editor = sharedPref.edit();
-
-		editor.putFloat("lat_home", (float) loc.getLatitude());
-
-		editor.putFloat("lon_home", (float) loc.getLongitude());
-
-		editor.commit();
+		getActivity().getPreferences(Context.MODE_PRIVATE)
+		.edit()
+		.putFloat("lat_home", (float) currentLocation.getLatitude())
+		.putFloat("lon_home", (float) currentLocation.getLongitude())
+		.commit();
+		homeLocation = currentLocation;
+		saveOnNextUpdate = false;
 	}
 
 	@Override
 	public void onClick(View view) {
 		switch (view.getId()) {
 		case R.id.Button_set_home:
-			getLocationClicked();
 			saveLocation();
 			Toast.makeText(getActivity().getApplicationContext(), "THIS IS HOME",
-					Toast.LENGTH_LONG).show();
+					Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.Button_fake_home:
 			getFakeLocation();
-			saveLocation();
 			Toast.makeText(getActivity().getApplicationContext(), "THIS IS FAKE HOME",
-					Toast.LENGTH_LONG).show();
+					Toast.LENGTH_SHORT).show();
 			break;
 		default:
 			Log.i(LOG_TAG, "Unknown: " + view.getId());
 			break;
 		}
+		drawLocation(homeLocation);	
 	}
 
+<<<<<<< HEAD
 	public void getFakeLocation() {
 
 		Random r = new Random();
@@ -184,8 +181,12 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 					Toast.LENGTH_LONG).show();
 		}
 	}
+=======
+>>>>>>> googlelocation
 
 	private void drawLocation(Location loc) {
+
+		if (loc == null) return;
 
 		TextView lat = (TextView) mSettingsView.findViewById(R.id.latitude);
 
@@ -199,10 +200,27 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 
 	}
 
-	private void makeUseOfNewLocation(Location location) {
-		loc = location;
+	public void getFakeLocation() {
 
-		drawLocation(loc);
+		Random r = new Random();
 
+		Double _lat = r.nextDouble() *100;
+		Double _lon = r.nextDouble() *100;
+
+		homeLocation = new Location("");
+		homeLocation.setLatitude(_lat);
+		homeLocation.setLongitude(_lon);
+
+		getActivity().getPreferences(Context.MODE_PRIVATE)
+		.edit()
+		.putFloat("lat_home", (float) homeLocation.getLatitude())
+		.putFloat("lon_home", (float) homeLocation.getLongitude())
+		.commit();
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		currentLocation = location;
+		if (saveOnNextUpdate) saveLocation();
 	}
 }

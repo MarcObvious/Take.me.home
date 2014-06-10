@@ -1,8 +1,16 @@
 package take.me.home;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.Intent;
+import android.content.IntentSender;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
@@ -11,13 +19,37 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+
+public class MainActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks, GooglePlayServicesClient.ConnectionCallbacks,
+GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 	
 	private SearchFragment mSearchFragment;
 	private SettingsFragment mSettingsFragment;
 	private GuideFragment mGuideFragment;
 	private MapsFragment mMapsFragment;
+	
+	private LocationClient mLocationClient;
+	private Location mLocation;
+	private LocationRequest mLocationRequest;
+	
+	private final List<LocationUpdatesListener> listeners = new ArrayList<LocationUpdatesListener>();
+	
+	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    private static final int MILLISECONDS_PER_SECOND = 1000;
+    public static final int UPDATE_INTERVAL_IN_SECONDS = 5;
+    private static final long UPDATE_INTERVAL = MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
+    private static final int FASTEST_INTERVAL_IN_SECONDS = 1;
+    private static final long FASTEST_INTERVAL = MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
+	
+
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -33,6 +65,12 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        mLocationClient = new LocationClient(this, this, this);
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -43,6 +81,34 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
     }
+    
+    @Override
+    protected void onStart() {
+    	super.onStart();
+    	mLocationClient.connect();
+    }
+    
+    @Override
+    protected void onStop() {
+    	super.onStop();
+    	if (mLocationClient.isConnected())
+            mLocationClient.removeLocationUpdates(this);
+    	mLocationClient.disconnect();
+    }
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		switch (requestCode) {
+        case CONNECTION_FAILURE_RESOLUTION_REQUEST :
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                	mLocationClient.connect();
+                break;
+            }
+		}
+	}
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -67,6 +133,9 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     			break;
     		default: fragment = PlaceholderFragment.newInstance(position + 1);
     	}
+    	
+    	if (LocationUpdatesListener.class.isAssignableFrom(fragment.getClass()) && !listeners.contains(fragment))
+    		listeners.add((LocationUpdatesListener)fragment);
     	
 		getFragmentManager().beginTransaction()
             .replace(R.id.container, fragment)
@@ -154,6 +223,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+            
             return rootView;
         }
 
@@ -164,5 +234,92 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
+    
+    // Define a DialogFragment that displays the error dialog
+    public static class ErrorDialogFragment extends DialogFragment {
+        // Global field to contain the error dialog
+        private Dialog mDialog;
+        // Default constructor. Sets the dialog field to null
+        public ErrorDialogFragment() {
+            super();
+            mDialog = null;
+        }
+        // Set the dialog to display
+        public void setDialog(Dialog dialog) {
+            mDialog = dialog;
+        }
+        // Return a Dialog to the DialogFragment.
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            return mDialog;
+        }
+    }
 
+	@Override
+	public void onConnectionFailed(ConnectionResult connectionResult) {
+        /*
+         * Google Play services can resolve some errors it detects.
+         * If the error has a resolution, try sending an Intent to
+         * start a Google Play services activity that can resolve
+         * error.
+         */
+        if (connectionResult.hasResolution()) {
+            try {
+                // Start an Activity that tries to resolve the error
+                connectionResult.startResolutionForResult(
+                        this,
+                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
+                /*
+                 * Thrown if Google Play services canceled the original
+                 * PendingIntent
+                 */
+            } catch (IntentSender.SendIntentException e) {
+                // Log the error
+                e.printStackTrace();
+            }
+        } else {
+            /*
+             * If no resolution is available, display a dialog to the
+             * user with the error.
+             */
+        	int errorCode = connectionResult.getErrorCode();
+            // Get the error dialog from Google Play services
+            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
+                    errorCode,
+                    this,
+                    CONNECTION_FAILURE_RESOLUTION_REQUEST);
+
+            // If Google Play services can provide an error dialog
+            if (errorDialog != null) {
+                // Create a new DialogFragment for the error dialog
+                ErrorDialogFragment errorFragment = new ErrorDialogFragment();
+                // Set the dialog in the DialogFragment
+                errorFragment.setDialog(errorDialog);
+                // Show the error dialog in the DialogFragment
+                errorFragment.show(getFragmentManager(), "Location Updates");
+            }
+        }
+    }
+
+	@Override
+	public void onConnected(Bundle bundle) {
+		 Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
+	     mLocationClient.requestLocationUpdates(mLocationRequest, this);
+	}
+
+	@Override
+	public void onDisconnected() {
+		 Toast.makeText(this, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		updateLocation(location);
+	}
+	
+	private void updateLocation(Location location) {
+		mLocation = location;
+		for (LocationUpdatesListener listener : listeners)
+			listener.onLocationChanged(mLocation);
+	}
 }
