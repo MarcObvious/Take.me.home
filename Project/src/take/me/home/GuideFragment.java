@@ -91,7 +91,9 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 		if (loc_dest != null && currentLocation != null) {
 			mAngle = Math.toDegrees(loc_dest.getLatitude() == currentLocation.getLatitude() ? 0 : Math.atan((loc_dest.getLongitude() - currentLocation.getLongitude()) / (loc_dest.getLatitude() - currentLocation.getLatitude())));
 			if (loc_dest.getLatitude() < currentLocation.getLatitude()) mAngle += Math.toDegrees(Math.PI);
+			
 			mCompassArrow.invalidate();
+			
 			text = (TextView) mSearchView.findViewById(R.id.x);
 			text.setText( String.valueOf(mAngle) );
 			text = (TextView) mSearchView.findViewById(R.id.z);
@@ -99,7 +101,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 		}
 	}
 
-	private boolean getLocation () {
+	private boolean getDestination () {
 		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 
 		Float lat = sharedPref.getFloat("lat_home", default_value);
@@ -129,7 +131,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 
 		mSearchView.addView(mCompassArrow);
 
-		if ( !getLocation() ) {
+		if ( !getDestination() ) {
 			Log.e(LOG_TAG, "NO HOME LOCATION & NO DESTINATION LOCATION : ");
 		}
 		else {
@@ -317,7 +319,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 		public CompassArrowView(Context context) {
 			super(context);
 
-			setAlpha(0.3f);
+			//setAlpha(0.3f);
 		};
 
 		// Compute location of compass arrow
@@ -332,18 +334,37 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 			mViewLeftY = mParentCenterX - mBitmapWidth / 2;
 			mViewTopX = mParentCenterY - mBitmapWidth / 2;
 		}
-
+		
+		protected int checkDistance() {
+			if (currentLocation.distanceTo(loc_dest) > 10) 
+				return 1;
+			else if (currentLocation.distanceTo(loc_dest) > 20) 
+				return 2;
+			else return 3;
+		}
 		// Redraw the compass arrow
 		@Override
 		protected void onDraw(Canvas canvas) {
 
 			// Save the canvas
 			canvas.save();
-
+			
 			// Rotate this View
 			canvas.rotate((float) -getRotationDegrees(), mParentCenterX,
 					mParentCenterY);
-
+			
+			int dist = checkDistance();
+			if (dist == 1 ) {
+				canvas.drawARGB(1, 2, 3, 4);
+			}
+			else if (dist == 2) {
+				canvas.drawARGB(1, 2, 3, 4);
+			}
+			
+			else {
+				canvas.drawARGB(1, 2, 3, 4);
+			}
+			
 			// Redraw this View
 			canvas.drawBitmap(mBitmap, mViewLeftY, mViewTopX, null);
 

@@ -1,5 +1,7 @@
 package take.me.home;
 
+import java.util.Random;
+
 import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -22,12 +24,12 @@ public class SettingsFragment extends Fragment implements OnClickListener, Locat
 	private Location homeLocation, currentLocation;
 
 	private boolean saveOnNextUpdate = false;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mSettingsView = (ViewGroup)inflater.inflate(R.layout.fragment_settings, container, false);
@@ -66,13 +68,13 @@ public class SettingsFragment extends Fragment implements OnClickListener, Locat
 			saveOnNextUpdate = true;
 			return;
 		}
-		
+
 		getActivity().getPreferences(Context.MODE_PRIVATE)
-			.edit()
-			.putFloat("lat_home", (float) currentLocation.getLatitude())
-			.putFloat("lon_home", (float) currentLocation.getLongitude())
-			.commit();
-		
+		.edit()
+		.putFloat("lat_home", (float) currentLocation.getLatitude())
+		.putFloat("lon_home", (float) currentLocation.getLongitude())
+		.commit();
+		homeLocation = currentLocation;
 		saveOnNextUpdate = false;
 	}
 
@@ -80,25 +82,27 @@ public class SettingsFragment extends Fragment implements OnClickListener, Locat
 	public void onClick(View view) {
 		switch (view.getId()) {
 		case R.id.Button_set_home:
-			getLocationClicked();
 			saveLocation();
 			Toast.makeText(getActivity().getApplicationContext(), "THIS IS HOME",
+					Toast.LENGTH_LONG).show();
+			break;
+		case R.id.Button_fake_home:
+			getFakeLocation();
+			Toast.makeText(getActivity().getApplicationContext(), "THIS IS FAKE HOME",
 					Toast.LENGTH_LONG).show();
 			break;
 		default:
 			Log.i(LOG_TAG, "Unknown: " + view.getId());
 			break;
 		}
+		drawLocation(homeLocation);	
 	}
 
-	public void getLocationClicked() {
-		saveLocation();
-	}
 
 	private void drawLocation(Location loc) {
 
 		if (loc == null) return;
-		
+
 		TextView lat = (TextView) mSettingsView.findViewById(R.id.latitude);
 
 		lat.setText( Double.toString(loc.getLatitude()) );	
@@ -110,7 +114,25 @@ public class SettingsFragment extends Fragment implements OnClickListener, Locat
 
 
 	}
-	
+
+	public void getFakeLocation() {
+
+		Random r = new Random();
+
+		Double _lat = r.nextDouble() *100;
+		Double _lon = r.nextDouble() *100;
+
+		homeLocation = new Location("");
+		homeLocation.setLatitude(_lat);
+		homeLocation.setLongitude(_lon);
+
+		getActivity().getPreferences(Context.MODE_PRIVATE)
+		.edit()
+		.putFloat("lat_home", (float) homeLocation.getLatitude())
+		.putFloat("lon_home", (float) homeLocation.getLongitude())
+		.commit();
+	}
+
 	@Override
 	public void onLocationChanged(Location location) {
 		currentLocation = location;
