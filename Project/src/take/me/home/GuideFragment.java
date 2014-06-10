@@ -336,9 +336,15 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 		}
 		
 		protected int checkDistance() {
-			if (currentLocation.distanceTo(loc_dest) > 10) 
+			float dist = currentLocation.distanceTo(loc_dest);
+			Log.i(LOG_TAG, Double.toString(currentLocation.getLatitude()));
+			Log.i(LOG_TAG, Double.toString(currentLocation.getLongitude()));
+			Log.i(LOG_TAG, Float.toString(dist));
+			Log.i(LOG_TAG, Double.toString(loc_dest.getLatitude()));
+			Log.i(LOG_TAG, Double.toString(loc_dest.getLongitude()));
+			if (dist > 10) 
 				return 1;
-			else if (currentLocation.distanceTo(loc_dest) > 20) 
+			else if (dist > 20) 
 				return 2;
 			else return 3;
 		}
@@ -362,7 +368,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 			}
 			
 			else {
-				canvas.drawARGB(1, 2, 3, 4);
+				canvas.drawARGB(0, 2, 3, 4);
 			}
 			
 			// Redraw this View
