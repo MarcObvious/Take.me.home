@@ -167,7 +167,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		} else if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
 			Log.d(LOG_TAG, "locationManager.isProviderEnabled = true/network");
 			locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, locationListener, null);
-			wait(100);
+			//wait(100);
 			//locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 			Location location = locationManager
 					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
