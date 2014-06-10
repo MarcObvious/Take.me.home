@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class GuideFragment  extends Fragment implements SensorEventListener, LocationListener {
@@ -336,15 +337,15 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 		}
 		
 		protected int checkDistance() {
-			float dist = currentLocation.distanceTo(loc_dest);
-			Log.i(LOG_TAG, Double.toString(currentLocation.getLatitude()));
-			Log.i(LOG_TAG, Double.toString(currentLocation.getLongitude()));
-			Log.i(LOG_TAG, Float.toString(dist));
-			Log.i(LOG_TAG, Double.toString(loc_dest.getLatitude()));
-			Log.i(LOG_TAG, Double.toString(loc_dest.getLongitude()));
-			if (dist > 10) 
+			//float dist = currentLocation.distanceTo(loc_dest);
+			Double lat_cu = currentLocation.getLatitude();
+			Double lon_cu = currentLocation.getLongitude();
+			Double lat_dest = loc_dest.getLatitude();
+			Double lon_dest = loc_dest.getLongitude();
+		
+			if (lat_dest - lat_cu  < 10 && lon_dest - lon_cu  < 10) 
 				return 1;
-			else if (dist > 20) 
+			else if (lat_dest - lat_cu  < 50 && lon_dest - lon_cu  < 50) 
 				return 2;
 			else return 3;
 		}
@@ -361,13 +362,19 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 			
 			int dist = checkDistance();
 			if (dist == 1 ) {
+		//		Log.i(LOG_TAG,"You're near");
+				canvas.drawBitmap(mBitmap, mViewLeftY, mViewTopX, null);
 				canvas.drawARGB(1, 2, 3, 4);
 			}
 			else if (dist == 2) {
+			//	Log.i(LOG_TAG,"You're quite near");
+				canvas.drawBitmap(mBitmap, mViewLeftY, mViewTopX, null);
 				canvas.drawARGB(1, 2, 3, 4);
 			}
 			
 			else {
+				//Log.i(LOG_TAG,"You're far");
+				canvas.drawBitmap(mBitmap, mViewLeftY, mViewTopX, null);
 				canvas.drawARGB(0, 2, 3, 4);
 			}
 			
