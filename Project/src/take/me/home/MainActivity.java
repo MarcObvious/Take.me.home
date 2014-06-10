@@ -50,6 +50,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
     private static final long FASTEST_INTERVAL = MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
 	
 
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -222,6 +223,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+            
             return rootView;
         }
 
@@ -232,8 +234,6 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
-    //LOCATON METHODS
-    
     
     // Define a DialogFragment that displays the error dialog
     public static class ErrorDialogFragment extends DialogFragment {
