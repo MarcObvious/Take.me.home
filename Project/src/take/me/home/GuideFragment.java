@@ -6,6 +6,10 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
+import android.graphics.Paint;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -19,7 +23,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class GuideFragment  extends Fragment implements SensorEventListener, LocationListener {
@@ -49,7 +52,11 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 	// View showing the compass arrow
 	private CompassArrowView mCompassArrow;
 
-
+	//We do it here, Because it's better not allocate objects on the draw methods
+	private Paint p = new Paint();
+	private static ColorFilter red ;
+	private static ColorFilter blue;
+	private static ColorFilter green;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,6 +71,16 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 
 		mLocationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
 		startLocationUpdates();
+
+		p = new Paint();
+
+		red = new LightingColorFilter(Color.RED, 1);
+
+		blue = new LightingColorFilter(Color.BLUE, 1);
+
+		green = new LightingColorFilter(Color.GREEN, 1);
+
+
 	}
 
 	private double getRotationDegrees() {
@@ -92,9 +109,9 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 		if (loc_dest != null && currentLocation != null) {
 			mAngle = Math.toDegrees(loc_dest.getLatitude() == currentLocation.getLatitude() ? 0 : Math.atan((loc_dest.getLongitude() - currentLocation.getLongitude()) / (loc_dest.getLatitude() - currentLocation.getLatitude())));
 			if (loc_dest.getLatitude() < currentLocation.getLatitude()) mAngle += Math.toDegrees(Math.PI);
-			
+
 			mCompassArrow.invalidate();
-			
+
 			text = (TextView) mSearchView.findViewById(R.id.x);
 			text.setText( String.valueOf(mAngle) );
 			text = (TextView) mSearchView.findViewById(R.id.z);
@@ -335,51 +352,46 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 			mViewLeftY = mParentCenterX - mBitmapWidth / 2;
 			mViewTopX = mParentCenterY - mBitmapWidth / 2;
 		}
-		
+
 		protected int checkDistance() {
 			//float dist = currentLocation.distanceTo(loc_dest);
 			Double lat_cu = currentLocation.getLatitude();
 			Double lon_cu = currentLocation.getLongitude();
 			Double lat_dest = loc_dest.getLatitude();
 			Double lon_dest = loc_dest.getLongitude();
-		
+
 			if (lat_dest - lat_cu  < 10 && lon_dest - lon_cu  < 10) 
 				return 1;
 			else if (lat_dest - lat_cu  < 50 && lon_dest - lon_cu  < 50) 
 				return 2;
 			else return 3;
 		}
+
+
+
 		// Redraw the compass arrow
 		@Override
 		protected void onDraw(Canvas canvas) {
 
 			// Save the canvas
 			canvas.save();
-			
+
 			// Rotate this View
 			canvas.rotate((float) -getRotationDegrees(), mParentCenterX,
 					mParentCenterY);
-			
+
+
 			int dist = checkDistance();
-			if (dist == 1 ) {
-		//		Log.i(LOG_TAG,"You're near");
-				canvas.drawBitmap(mBitmap, mViewLeftY, mViewTopX, null);
-				canvas.drawARGB(1, 2, 3, 4);
-			}
-			else if (dist == 2) {
-			//	Log.i(LOG_TAG,"You're quite near");
-				canvas.drawBitmap(mBitmap, mViewLeftY, mViewTopX, null);
-				canvas.drawARGB(1, 2, 3, 4);
-			}
-			
-			else {
-				//Log.i(LOG_TAG,"You're far");
-				canvas.drawBitmap(mBitmap, mViewLeftY, mViewTopX, null);
-				canvas.drawARGB(0, 2, 3, 4);
-			}
-			
+
+			if (dist == 1 ) 
+				p.setColorFilter(red);
+			else if (dist == 2) 
+				p.setColorFilter(blue);
+			else 
+				p.setColorFilter(green);
+
 			// Redraw this View
-			canvas.drawBitmap(mBitmap, mViewLeftY, mViewTopX, null);
+			canvas.drawBitmap(mBitmap, mViewLeftY, mViewTopX, p);
 
 			// Restore the canvas
 			canvas.restore();

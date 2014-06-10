@@ -84,12 +84,12 @@ public class SettingsFragment extends Fragment implements OnClickListener, Locat
 		case R.id.Button_set_home:
 			saveLocation();
 			Toast.makeText(getActivity().getApplicationContext(), "THIS IS HOME",
-					Toast.LENGTH_LONG).show();
+					Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.Button_fake_home:
 			getFakeLocation();
 			Toast.makeText(getActivity().getApplicationContext(), "THIS IS FAKE HOME",
-					Toast.LENGTH_LONG).show();
+					Toast.LENGTH_SHORT).show();
 			break;
 		default:
 			Log.i(LOG_TAG, "Unknown: " + view.getId());
