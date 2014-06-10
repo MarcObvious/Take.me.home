@@ -3,12 +3,16 @@ package take.me.home;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationClient;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.IntentSender;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -30,7 +34,11 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	
 	 private final static int
      CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-	
+	 
+	 private ConnectionResult connectionResult;
+	 
+	 private static LocationClient mLocationClient;
+
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -55,6 +63,8 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+        
+        mLocationClient = new LocationClient(this, this, this);
         
         
     }
@@ -169,6 +179,13 @@ GooglePlayServicesClient.OnConnectionFailedListener {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+            
+            
+            Location mCurrentLocation;
+            mCurrentLocation = mLocationClient.getLastLocation();
+            
+            Toast.makeText(getActivity(), (int) mCurrentLocation.getLongitude() , Toast.LENGTH_SHORT).show();
+            
             return rootView;
         }
 
@@ -180,7 +197,25 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         }
     }
     //LOCATON METHODS
-    
+    /*
+     * Called when the Activity becomes visible.
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Connect the client.
+        mLocationClient.connect();
+    }
+   
+    /*
+     * Called when the Activity is no longer visible.
+     */
+    @Override
+    protected void onStop() {
+        // Disconnecting the client invalidates it.
+        mLocationClient.disconnect();
+        super.onStop();
+    }
     
     // Define a DialogFragment that displays the error dialog
     public static class ErrorDialogFragment extends DialogFragment {
@@ -204,28 +239,28 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 
 	@Override
 	public void onConnectionFailed(ConnectionResult arg0) {
-//		// TODO Auto-generated method stub
-//		 if (connectionResult.hasResolution()) {
-//	            try {
-//	                // Start an Activity that tries to resolve the error
-//	                connectionResult.startResolutionForResult(
-//	                        this,
-//	                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
-//	                /*
-//	                 * Thrown if Google Play services canceled the original
-//	                 * PendingIntent
-//	                 */
-//	            } catch (IntentSender.SendIntentException e) {
-//	                // Log the error
-//	                e.printStackTrace();
-//	            }
-//	        } else {
-//	            /*
-//	             * If no resolution is available, display a dialog to the
-//	             * user with the error.
-//	             */
+		// TODO Auto-generated method stub
+		 if (connectionResult.hasResolution()) {
+	            try {
+	                // Start an Activity that tries to resolve the error
+	                connectionResult.startResolutionForResult(
+	                        this,
+	                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
+	                /*
+	                 * Thrown if Google Play services canceled the original
+	                 * PendingIntent
+	                 */
+	            } catch (IntentSender.SendIntentException e) {
+	                // Log the error
+	                e.printStackTrace();
+	            }
+	        } else {
+	            /*
+	             * If no resolution is available, display a dialog to the
+	             * user with the error.
+	             */
 //	            showErrorDialog(connectionResult.getErrorCode());
-//	        }
+	        }
 		
 	}
 
@@ -271,9 +306,10 @@ GooglePlayServicesClient.OnConnectionFailedListener {
                 // Set the dialog in the DialogFragment
                 errorFragment.setDialog(errorDialog);
                 // Show the error dialog in the DialogFragment
-                errorFragment.show(getSupportFragmentManager(),
-                        "Location Updates");
+//                errorFragment.show(getSupportFragmentManager(),
+//                        "Location Updates");
             }
+        return false;
         }
     }
 }
