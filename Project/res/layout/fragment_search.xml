@@ -21,16 +21,18 @@
 
     <EditText
         android:id="@+id/answer"
-        android:textSize="17sp"
-		android:layout_marginTop="7dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/Question"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-   
+        android:layout_below="@id/Question"
+        android:layout_marginTop="7dp"
         android:ems="10"
-        android:hint="@string/Question_hint" />
+        android:hint="@string/Question_hint"
+        android:inputType="textAutoComplete"
+        android:textSize="17sp" />
+    
+    <requestFocus />
 
     <Button
         android:id="@+id/Button_search"
@@ -81,6 +83,5 @@
         android:layout_alignParentRight="true"
         android:layout_below="@id/Dest_Longitude" />
 
-    
 
 </RelativeLayout>
