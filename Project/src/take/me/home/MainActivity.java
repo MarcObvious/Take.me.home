@@ -1,5 +1,8 @@
 package take.me.home;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
@@ -11,8 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks, GooglePlayServicesClient.ConnectionCallbacks,
+GooglePlayServicesClient.OnConnectionFailedListener {
 	
 	private SearchFragment mSearchFragment;
 	private SettingsFragment mSettingsFragment;
@@ -164,5 +169,45 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
+
+	@Override
+	public void onConnectionFailed(ConnectionResult arg0) {
+//		// TODO Auto-generated method stub
+//		 if (connectionResult.hasResolution()) {
+//	            try {
+//	                // Start an Activity that tries to resolve the error
+//	                connectionResult.startResolutionForResult(
+//	                        this,
+//	                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
+//	                /*
+//	                 * Thrown if Google Play services canceled the original
+//	                 * PendingIntent
+//	                 */
+//	            } catch (IntentSender.SendIntentException e) {
+//	                // Log the error
+//	                e.printStackTrace();
+//	            }
+//	        } else {
+//	            /*
+//	             * If no resolution is available, display a dialog to the
+//	             * user with the error.
+//	             */
+//	            showErrorDialog(connectionResult.getErrorCode());
+//	        }
+		
+	}
+
+	@Override
+	public void onConnected(Bundle arg0) {
+		 Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
+		
+	}
+
+	@Override
+	public void onDisconnected() {
+		 Toast.makeText(this, "Disconnected. Please re-connect.",
+	                Toast.LENGTH_SHORT).show();
+		
+	}
 
 }
