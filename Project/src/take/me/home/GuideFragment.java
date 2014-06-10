@@ -353,18 +353,18 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 			mViewTopX = mParentCenterY - mBitmapWidth / 2;
 		}
 
-		protected int checkDistance() {
-			//float dist = currentLocation.distanceTo(loc_dest);
+		protected void checkDistance() {
 			Double lat_cu = currentLocation.getLatitude();
 			Double lon_cu = currentLocation.getLongitude();
 			Double lat_dest = loc_dest.getLatitude();
 			Double lon_dest = loc_dest.getLongitude();
 
 			if (lat_dest - lat_cu  < 10 && lon_dest - lon_cu  < 10) 
-				return 1;
+				p.setColorFilter(red);
 			else if (lat_dest - lat_cu  < 50 && lon_dest - lon_cu  < 50) 
-				return 2;
-			else return 3;
+				p.setColorFilter(blue);
+			else 
+				p.setColorFilter(green);
 		}
 
 
@@ -381,14 +381,7 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 					mParentCenterY);
 
 
-			int dist = checkDistance();
-
-			if (dist == 1 ) 
-				p.setColorFilter(red);
-			else if (dist == 2) 
-				p.setColorFilter(blue);
-			else 
-				p.setColorFilter(green);
+			checkDistance();
 
 			// Redraw this View
 			canvas.drawBitmap(mBitmap, mViewLeftY, mViewTopX, p);
