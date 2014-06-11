@@ -16,5 +16,10 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+    <!-- Splash Screen -->
+    <style name="splashScreenTheme" parent="AppBaseTheme">
+    <item name="android:windowBackground">@drawable/splash</item>
+</style>
 
 </resources>
