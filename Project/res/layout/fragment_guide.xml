@@ -72,50 +72,6 @@
         android:layout_alignParentRight="true"
         android:layout_below="@id/DestLongitude" />
 
-    <!-- Actual Accelerometre -->
 
-    <TextView
-        android:id="@+id/X"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="150dp"
-        android:text="@string/X" />
-
-    <TextView
-        android:id="@+id/x"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/X" />
-
-    <TextView
-        android:id="@+id/Y"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"
-        android:text="@string/Y" />
-
-    <TextView
-        android:id="@+id/y"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/Y"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:id="@+id/Z"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="150dp"
-        android:text="@string/Z" />
-    <TextView
-        android:id="@+id/z"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/Z" />
 
 </RelativeLayout>

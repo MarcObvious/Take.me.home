@@ -111,11 +111,11 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 			if (loc_dest.getLatitude() < currentLocation.getLatitude()) mAngle += Math.toDegrees(Math.PI);
 
 			mCompassArrow.invalidate();
-
-			text = (TextView) mSearchView.findViewById(R.id.x);
-			text.setText( String.valueOf(mAngle) );
-			text = (TextView) mSearchView.findViewById(R.id.z);
-			text.setText( String.valueOf(currentLocation.bearingTo(loc_dest)) );
+//
+//			text = (TextView) mSearchView.findViewById(R.id.x);
+//			text.setText( String.valueOf(mAngle) );
+//			text = (TextView) mSearchView.findViewById(R.id.z);
+//			text.setText( String.valueOf(currentLocation.bearingTo(loc_dest)) );
 		}
 	}
 
