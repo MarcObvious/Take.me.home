@@ -325,9 +325,9 @@ public class GuideFragment  extends Fragment implements SensorEventListener, Loc
 			Double lat_dest = loc_dest.getLatitude();
 			Double lon_dest = loc_dest.getLongitude();
 
-			if (lat_dest - lat_cu  < 10 && lon_dest - lon_cu  < 10) 
+			if (lat_dest - lat_cu  < 4 && lon_dest - lon_cu  < 4) 
 				p.setColorFilter(red);
-			else if (lat_dest - lat_cu  < 50 && lon_dest - lon_cu  < 50) 
+			else if (lat_dest - lat_cu  < 10 && lon_dest - lon_cu  < 10) 
 				p.setColorFilter(blue);
 			else 
 				p.setColorFilter(green);

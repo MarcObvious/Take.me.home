@@ -82,7 +82,7 @@
         android:text="@string/DestLong" />
 
     <TextView
-        android:id="@+id/longitude"
+        android:id="@+id/dest_longitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
