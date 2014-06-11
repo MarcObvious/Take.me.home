@@ -32,5 +32,18 @@
     <string name="X">X</string>
     <string name="Y">Y</string>
     <string name="Z">Z</string>
+    
+    <!--  Fake autocomplete -->
+     <string-array name="list_of_countries">
+      <item >Sant Cugat del Vallès</item>
+      <item >Sabadell</item>
+      <item >Sant Vicenç dels Horts</item>
+      <item >Sant Sadurní d\'Anoia</item>
+      <item >Sant Feliu de Codines</item>
+      <item >Sant Adrià de Besós</item>
+      <item >Barcelona</item>
+      <item >Badalona</item>
+      <item >Mongat</item> </string-array>
+      
 
 </resources>

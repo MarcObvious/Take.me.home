@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -14,6 +16,8 @@ public class SearchFragment extends Fragment implements OnClickListener {
 
 	private ViewGroup mSearchView;
 	private final static String LOG_TAG = "SEARCH FRAGMENT";
+	private AutoCompleteTextView actv;
+
 
 
 	@Override
@@ -27,9 +31,19 @@ public class SearchFragment extends Fragment implements OnClickListener {
 		mSearchView = (ViewGroup)inflater.inflate(R.layout.fragment_search, container, false);
 		Button b_go_home = (Button) mSearchView.findViewById(R.id.Button_home);
 		b_go_home .setOnClickListener(this); 
-		
+
 		Button b_search = (Button) mSearchView.findViewById(R.id.Button_search);
 		b_search.setOnClickListener(this); 
+
+		String[] countries = getResources().
+				getStringArray(R.array.list_of_countries);
+		ArrayAdapter adapter = new ArrayAdapter
+				(getActivity(),android.R.layout.simple_list_item_1,countries);
+
+
+		actv = (AutoCompleteTextView) mSearchView.findViewById(R.id.autocompletetext);
+
+		actv.setAdapter(adapter);
 
 		return mSearchView;
 	}

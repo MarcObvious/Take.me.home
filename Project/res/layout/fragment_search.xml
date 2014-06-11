@@ -20,8 +20,11 @@
         android:layout_centerHorizontal="true"
         android:text="@string/Question" />
 
-    <EditText
-        android:id="@+id/answer"
+    
+
+  
+    <AutoCompleteTextView
+        android:id="@+id/autocompletetext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -31,15 +34,16 @@
         android:ems="10"
         android:hint="@string/Question_hint"
         android:inputType="textAutoComplete"
-        android:textSize="17sp" />
+        android:textSize="17sp">
     
-    <requestFocus />
+    	<requestFocus />
+     </AutoCompleteTextView>
 
     <Button
         android:id="@+id/Button_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/answer"
+        android:layout_below="@id/autocompletetext"
         android:layout_centerHorizontal="true"
         android:text="@string/Button_search" />
 
